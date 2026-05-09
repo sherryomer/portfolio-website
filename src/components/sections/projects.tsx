@@ -12,7 +12,7 @@ const projects = [
       "JOBOT is a full-stack job search platform built with TypeScript — intelligent listing aggregation, advanced search and filter, real-time tracking, and an end-to-end application management workflow. Designed to cut through the noise and streamline your entire job hunt from discovery to offer.",
     tech: ["TypeScript", "Next.js", "React", "Tailwind CSS"],
     github: null,
-    liveUrl: null, // Add your deployed URL here e.g. "https://jobot.vercel.app"
+    liveUrl: "https://job-search-app-ten-lemon.vercel.app/auth/signin",
     isPrivate: true,
     color: "cyan",
     category: "Full-Stack",
@@ -26,7 +26,7 @@ const projects = [
       "Production RAG chatbot deployed at Simpaisa — dual-channel (Telegram + Slack) merchant support using Supabase pgvector and GPT-4. Achieved 85.3% pass rate on a 200-question benchmark.",
     tech: ["TypeScript", "RAG", "GPT-4", "Supabase", "n8n"],
     github: null,
-    liveUrl: null, // Add your deployed URL here
+    liveUrl: "https://simpaisa-chatbot.onrender.com",
     isPrivate: true,
     color: "amber",
     category: "Fintech AI",
@@ -68,7 +68,7 @@ const projects = [
       "Client-facing conversational AI chatbot — handles customer support workflows with LLM-powered responses and smart escalation logic.",
     tech: ["HTML", "JavaScript", "OpenAI API"],
     github: null,
-    liveUrl: null, // Add your deployed URL here
+    liveUrl: "https://eveon-chatbot.onrender.com",
     isPrivate: true,
     color: "amber",
     category: "Chatbot",
