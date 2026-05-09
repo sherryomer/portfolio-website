@@ -6,19 +6,32 @@ import { ExternalLink, Lock } from "lucide-react"
 const projects = [
   {
     id: 1,
-    name: "University AI Chatbot",
-    subtitle: "Senior Project @ LUMS",
+    name: "Job Search App",
+    subtitle: "Full-Stack Platform",
     description:
-      "RAG-powered AI chatbot built for LUMS using LangChain and OpenAI. Streamlines student and faculty query resolution with real-time information retrieval from institutional knowledge bases.",
-    tech: ["Python", "LangChain", "OpenAI API", "RAG", "ChromaDB", "FastAPI"],
-    github: "https://github.com/sherryomer/SPROJ",
-    isPrivate: false,
+      "A full-stack job search platform built with TypeScript — aggregates listings, advanced search and filter, and application tracking. Designed to streamline the entire job hunting workflow from discovery to application management.",
+    tech: ["TypeScript", "Next.js", "React", "Tailwind CSS"],
+    github: null,
+    isPrivate: true,
     color: "cyan",
-    category: "AI / RAG",
+    category: "Full-Stack",
     featured: true,
   },
   {
     id: 2,
+    name: "University AI Chatbot",
+    subtitle: "Senior Project @ LUMS",
+    description:
+      "RAG-powered AI chatbot built with LangChain and OpenAI. Streamlines student and faculty query resolution with real-time information retrieval from institutional knowledge bases.",
+    tech: ["Python", "LangChain", "OpenAI API", "RAG", "ChromaDB", "FastAPI"],
+    github: "https://github.com/sherryomer/SPROJ",
+    isPrivate: false,
+    color: "amber",
+    category: "AI / RAG",
+    featured: false,
+  },
+  {
+    id: 3,
     name: "YOLOv8 Object Detection",
     subtitle: "Computer Vision",
     description:
@@ -26,12 +39,12 @@ const projects = [
     tech: ["Python", "YOLOv8", "PyTorch", "OpenCV"],
     github: "https://github.com/sherryomer/Object-Detection-using-YOLOv8",
     isPrivate: false,
-    color: "amber",
+    color: "slate",
     category: "Computer Vision",
     featured: false,
   },
   {
-    id: 3,
+    id: 4,
     name: "Time Series Forecasting",
     subtitle: "Predictive Modeling",
     description:
@@ -39,21 +52,8 @@ const projects = [
     tech: ["Python", "Pandas", "Scikit-learn", "Matplotlib", "Jupyter"],
     github: "https://github.com/sherryomer/Time-Series-Predictive-Modeling-",
     isPrivate: false,
-    color: "slate",
-    category: "Data Science",
-    featured: false,
-  },
-  {
-    id: 4,
-    name: "BookYolo",
-    subtitle: "Full-Stack Web App",
-    description:
-      "Full-stack book application with a JavaScript frontend and Node.js backend. Browse, search, and manage book collections with a clean web interface.",
-    tech: ["JavaScript", "Node.js", "HTML", "CSS"],
-    github: "https://github.com/sherryomer/BookYoloWebFrontend",
-    isPrivate: false,
     color: "cyan",
-    category: "Full-Stack",
+    category: "Data Science",
     featured: false,
   },
   {

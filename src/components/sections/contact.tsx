@@ -34,8 +34,8 @@ const contactLinks = [
   {
     Icon: Mail,
     label: "Email",
-    value: "shahzadashehryar@gmail.com",
-    href: "mailto:shahzadashehryar@gmail.com",
+    value: "shahzadashehryar16@gmail.com",
+    href: "mailto:shahzadashehryar16@gmail.com",
     color: "amber",
     isLucide: true,
   },
@@ -216,8 +216,8 @@ export function Contact() {
                   {status === "error" && (
                     <p className="text-red-400 text-sm">
                       Something went wrong. Email me directly at{" "}
-                      <a href="mailto:shahzadashehryar@gmail.com" className="underline">
-                        shahzadashehryar@gmail.com
+                      <a href="mailto:shahzadashehryar16@gmail.com" className="underline">
+                        shahzadashehryar16@gmail.com
                       </a>
                     </p>
                   )}
@@ -263,7 +263,7 @@ export function Contact() {
               className="text-slate-600 hover:text-slate-300 transition-colors text-sm">GitHub</a>
             <a href="https://www.linkedin.com/in/shahzadashehryar/" target="_blank" rel="noopener noreferrer"
               className="text-slate-600 hover:text-slate-300 transition-colors text-sm">LinkedIn</a>
-            <a href="mailto:shahzadashehryar@gmail.com"
+            <a href="mailto:shahzadashehryar16@gmail.com"
               className="text-slate-600 hover:text-slate-300 transition-colors text-sm">Email</a>
           </div>
         </motion.footer>

@@ -168,10 +168,10 @@ export function Hero() {
             <LinkedinIcon />
           </a>
           <a
-            href="mailto:shahzadashehryar@gmail.com"
+            href="mailto:shahzadashehryar16@gmail.com"
             className="px-4 py-2.5 rounded-xl border border-white/[0.08] text-slate-500 hover:text-white hover:border-white/[0.18] transition-all duration-200 text-xs font-mono"
           >
-            shahzadashehryar@gmail.com
+            shahzadashehryar16@gmail.com
           </a>
         </motion.div>
 
