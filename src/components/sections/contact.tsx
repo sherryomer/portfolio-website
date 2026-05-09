@@ -86,7 +86,7 @@ export function Contact() {
           transition={{ duration: 0.6 }}
           className="mb-20"
         >
-          <p className="text-cyan-500 font-mono text-xs mb-3 tracking-[0.2em] uppercase">05 / Contact</p>
+          <p className="text-cyan-500 font-mono text-xs mb-3 tracking-[0.2em] uppercase">06 / Contact</p>
           <h2 className="text-4xl sm:text-5xl font-black text-white mb-4 leading-tight">
             Let&apos;s <span className="text-cyan-400">Connect</span>
           </h2>
@@ -256,7 +256,7 @@ export function Contact() {
           className="mt-24 pt-8 border-t border-white/[0.07] flex flex-col sm:flex-row items-center justify-between gap-4"
         >
           <p className="text-slate-600 text-sm">
-            © {new Date().getFullYear()} Shahzada Muhammad Shehryar · CS Graduate, LUMS
+            © {new Date().getFullYear()} Shahzada Muhammad Shehryar
           </p>
           <div className="flex items-center gap-6">
             <a href="https://github.com/sherryomer" target="_blank" rel="noopener noreferrer"

@@ -107,6 +107,7 @@ export function Skills() {
           className="mb-20"
         >
           <p className="text-cyan-500 font-mono text-xs mb-3 tracking-[0.2em] uppercase">04 / Skills</p>
+
           <h2 className="text-4xl sm:text-5xl font-black text-white mb-4 leading-tight">
             My <span className="text-cyan-400">Toolkit</span>
           </h2>

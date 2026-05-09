@@ -9,37 +9,34 @@ const experiences = [
     company: "Simpaisa",
     companyUrl: "https://simpaisa.com",
     role: "AI Product Analyst",
-    period: "2024 — Present",
+    period: "Feb 2026 — Present",
     location: "Pakistan",
-    type: "Full-time · Fintech",
     description:
-      "Leading AI-driven automation at a fintech company — building and integrating chatbots, automating merchant onboarding workflows, and turning product data into actionable decisions. The role sits at the intersection of engineering and product strategy.",
+      "Building AI-driven automation at a fintech company — from RAG chatbots to fully automated merchant onboarding workflows. Sitting at the intersection of engineering and product strategy across PK, BD & NP markets.",
     achievements: [
-      "Built AI chatbot integrations handling end-to-end merchant support queries",
-      "Automated merchant onboarding pipeline — reduced processing time by 60%",
-      "Drove product analytics initiatives surfacing actionable business insights",
-      "Bridged engineering and product teams through AI-first solutions",
+      "Architected a dual-channel RAG chatbot (Telegram + Slack) for merchant onboarding using Supabase pgvector, GPT-4 & n8n — 85.3% pass rate on 200-question benchmark",
+      "Automated merchant onboarding end-to-end via n8n: Jira ticket creation, service-type classification, accelerating time-to-live across markets",
+      "Integrated production & mock APIs for Payins, Payouts & Remittance with async flows, retry schedulers & idempotency handling",
+      "Bridged engineering and product teams through AI-first solutions and data-driven decisions",
     ],
-    tags: ["LangChain", "OpenAI", "Product Analytics", "Process Automation", "Fintech"],
+    tags: ["RAG", "GPT-4", "n8n", "Supabase", "LangChain", "Fintech", "Product Analytics"],
     color: "cyan",
     current: true,
   },
   {
     id: 2,
-    company: "AI Startup",
+    company: "Gspec Technologies",
     role: "AI Engineer",
-    period: "2023 — 2024",
+    period: "Aug 2025 — Nov 2025",
     location: "Pakistan",
-    type: "Full-time · Service-based",
     description:
-      "Designed and shipped bespoke AI solutions for clients across industries. Delivered everything from conversational chatbots to real-time voice agents — building full-stack AI products using LLMs, RAG pipelines, and speech processing.",
+      "Designed and shipped bespoke AI solutions for clients across industries — fine-tuning LLMs, building full-stack AI applications, and deploying intelligent automation agents.",
     achievements: [
-      "Delivered 5+ production chatbot systems across different client verticals",
-      "Built end-to-end voice agent pipelines: STT → LLM processing → TTS",
-      "Implemented domain-specific RAG architectures with custom knowledge bases",
-      "Created a reusable AI wrapper library abstracting multiple LLM providers",
+      "Fine-tuned OpenAI and open-source LLMs for domain-specific use cases — improved generative response accuracy by 22%",
+      "Built a full-stack AI application for Airbnb listings analysis (web + iOS), processing and filtering 14,000+ listings via data engineering pipelines",
+      "Deployed LangChain + n8n agents automating workflows and improving customer experience across multiple industries",
     ],
-    tags: ["Python", "LangChain", "Voice AI", "RAG", "FastAPI", "LLMs"],
+    tags: ["Python", "LangChain", "n8n", "LLM Fine-tuning", "FastAPI", "iOS"],
     color: "amber",
     current: false,
   },
@@ -47,25 +44,25 @@ const experiences = [
 
 export function Experience() {
   return (
-    <section id="experience" className="py-28 px-4 sm:px-6 lg:px-8 section-alt">
+    <section id="experience" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 section-alt">
       <div className="max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-20"
+          className="mb-14 sm:mb-20"
         >
           <p className="text-cyan-500 font-mono text-xs mb-3 tracking-[0.2em] uppercase">02 / Experience</p>
-          <h2 className="text-4xl sm:text-5xl font-black text-white mb-4 leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-4 leading-tight">
             Where I&apos;ve <span className="text-cyan-400">Worked</span>
           </h2>
-          <p className="text-slate-400 text-lg max-w-lg leading-relaxed">
-            Two years building AI products — from client chatbots to fintech automation pipelines.
+          <p className="text-slate-400 text-base sm:text-lg max-w-lg leading-relaxed">
+            Building AI products in fintech and across industries — from fine-tuned LLMs to production RAG systems.
           </p>
         </motion.div>
 
-        <div className="space-y-6">
+        <div className="space-y-5 sm:space-y-6">
           {experiences.map((exp, index) => (
             <motion.div
               key={exp.id}
@@ -75,41 +72,42 @@ export function Experience() {
               transition={{ duration: 0.65, delay: index * 0.15 }}
             >
               <div
-                className={`relative p-8 rounded-3xl border transition-all duration-500 ${
+                className={`relative p-5 sm:p-8 rounded-3xl border transition-all duration-500 overflow-hidden ${
                   exp.current
                     ? "bg-gradient-to-br from-white/[0.05] to-white/[0.02] border-white/[0.12]"
                     : "bg-white/[0.025] border-white/[0.08] hover:border-white/[0.14] hover:bg-white/[0.04]"
                 }`}
               >
                 {exp.current && (
-                  <div className="absolute top-7 right-7">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/12 border border-emerald-500/25 text-emerald-400 text-xs font-semibold">
+                  <div className="absolute top-5 right-5 sm:top-7 sm:right-7">
+                    <span className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-emerald-500/12 border border-emerald-500/25 text-emerald-400 text-[11px] sm:text-xs font-semibold">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                       Current
                     </span>
                   </div>
                 )}
 
-                <div className="flex flex-col lg:flex-row gap-8">
-                  {/* Left column */}
-                  <div className="lg:w-52 shrink-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-xl font-black text-white">{exp.company}</h3>
+                {/* Mobile: stack everything. Desktop: two columns */}
+                <div className="flex flex-col lg:flex-row gap-5 lg:gap-8">
+                  {/* Left column — metadata */}
+                  <div className="w-full lg:w-48 xl:w-52 shrink-0 min-w-0">
+                    <div className="flex items-center gap-2 mb-1 pr-20 lg:pr-0">
+                      <h3 className="text-lg sm:text-xl font-black text-white leading-tight">{exp.company}</h3>
                       {exp.companyUrl && (
                         <a
                           href={exp.companyUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-slate-600 hover:text-slate-300 transition-colors"
+                          className="text-slate-600 hover:text-slate-300 transition-colors shrink-0"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
                         </a>
                       )}
                     </div>
-                    <p className={`text-sm font-bold mb-4 ${exp.color === "cyan" ? "text-cyan-400" : "text-amber-400"}`}>
+                    <p className={`text-sm font-bold mb-3 ${exp.color === "cyan" ? "text-cyan-400" : "text-amber-400"}`}>
                       {exp.role}
                     </p>
-                    <div className="space-y-1.5 mb-5">
+                    <div className="space-y-1.5 mb-4">
                       <div className="flex items-center gap-2 text-slate-500 text-xs">
                         <Calendar className="w-3.5 h-3.5 shrink-0" />
                         <span>{exp.period}</span>
@@ -135,9 +133,12 @@ export function Experience() {
                     </div>
                   </div>
 
-                  {/* Right column */}
-                  <div className="flex-1 lg:border-l lg:border-white/[0.08] lg:pl-8">
-                    <p className="text-slate-400 leading-relaxed mb-6 text-sm sm:text-base">
+                  {/* Divider — only on desktop */}
+                  <div className="hidden lg:block w-px bg-white/[0.08] self-stretch shrink-0" />
+
+                  {/* Right column — description */}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-slate-400 leading-relaxed mb-5 text-sm sm:text-base">
                       {exp.description}
                     </p>
                     <ul className="space-y-3">
@@ -148,14 +149,14 @@ export function Experience() {
                           whileInView={{ opacity: 1, x: 0 }}
                           viewport={{ once: true }}
                           transition={{ delay: 0.3 + i * 0.07 }}
-                          className="flex items-start gap-3 text-slate-300 text-sm"
+                          className="flex items-start gap-3 text-slate-300 text-sm leading-relaxed"
                         >
                           <span
                             className={`mt-2 w-1.5 h-1.5 rounded-full shrink-0 ${
                               exp.color === "cyan" ? "bg-cyan-400" : "bg-amber-400"
                             }`}
                           />
-                          {item}
+                          <span className="min-w-0">{item}</span>
                         </motion.li>
                       ))}
                     </ul>
