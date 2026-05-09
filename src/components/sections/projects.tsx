@@ -130,42 +130,20 @@ function ProjectCard({
         <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r ${c.topBar} opacity-60`} />
       )}
 
-      <div className="flex items-start justify-between mb-4 sm:mb-5 gap-2">
+      {/* Header row: category badge + private tag */}
+      <div className="flex items-center justify-between mb-4 sm:mb-5 gap-2">
         <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold border shrink-0 ${c.badge}`}>
           {project.category}
         </span>
-        <div className="flex items-center gap-1.5 shrink-0">
-          {project.isPrivate && (
-            <span className="flex items-center gap-1 text-[11px] text-slate-600">
-              <Lock className="w-3 h-3" />
-              Private
-            </span>
-          )}
-          {project.liveUrl && (
-            <a
-              href={project.liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              title="Live Demo"
-              className="p-1.5 rounded-lg text-slate-500 hover:text-cyan-400 hover:bg-cyan-500/10 transition-all duration-200"
-            >
-              <Globe className="w-4 h-4" />
-            </a>
-          )}
-          {!project.isPrivate && project.github && (
-            <a
-              href={project.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              title="View Code"
-              className="p-1.5 rounded-lg text-slate-600 hover:text-white hover:bg-white/[0.08] transition-all duration-200"
-            >
-              <ExternalLink className="w-4 h-4" />
-            </a>
-          )}
-        </div>
+        {project.isPrivate && (
+          <span className="flex items-center gap-1 text-[11px] text-slate-600">
+            <Lock className="w-3 h-3" />
+            Private
+          </span>
+        )}
       </div>
 
+      {/* Content */}
       <div className="flex-1 min-w-0">
         <h3 className={`font-black text-white mb-1 leading-tight ${featured ? "text-xl sm:text-2xl md:text-3xl" : "text-base sm:text-lg"}`}>
           {project.name}
@@ -178,7 +156,8 @@ function ProjectCard({
         </p>
       </div>
 
-      <div className="flex flex-wrap gap-1.5 mt-4 sm:mt-6">
+      {/* Tech tags */}
+      <div className="flex flex-wrap gap-1.5 mt-4 sm:mt-5">
         {project.tech.map((t) => (
           <span
             key={t}
@@ -188,6 +167,34 @@ function ProjectCard({
           </span>
         ))}
       </div>
+
+      {/* Action buttons */}
+      {(project.liveUrl || (!project.isPrivate && project.github)) && (
+        <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/[0.06]">
+          {project.liveUrl && (
+            <a
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 bg-white/[0.06] border border-white/[0.1] text-white hover:bg-white/[0.12] hover:border-white/[0.2]`}
+            >
+              <Globe className="w-3.5 h-3.5" />
+              Live Demo
+            </a>
+          )}
+          {!project.isPrivate && project.github && (
+            <a
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 bg-white/[0.04] border border-white/[0.08] text-slate-400 hover:text-white hover:bg-white/[0.08]"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              View Code
+            </a>
+          )}
+        </div>
+      )}
     </div>
   )
 }
