@@ -35,12 +35,12 @@ const projects = [
   {
     id: 7,
     name: "ROAR MMA",
-    subtitle: "Cinematic Gym Website",
+    subtitle: "Client Project · MMA Gym",
     description:
-      "A bold, cinematic website for an MMA gym — full-screen hero, training programs, class schedule, coach profiles, pricing tiers, gallery, and a free-trial sign-up flow. Neo-brutalist red-on-black design with grain, glow, and smooth scroll-driven motion throughout.",
+      "A professional website built for a client — ROAR Martial Arts gym. Full-screen hero, training programs, class schedule, coach profiles, pricing tiers, gallery, and a free-trial sign-up flow. Bold red-on-black design with smooth scroll-driven motion, deployed on a custom domain.",
     tech: ["TypeScript", "Next.js 14", "React", "Tailwind CSS", "Framer Motion"],
     github: null,
-    liveUrl: "https://roar-mma.vercel.app",
+    liveUrl: "https://www.roarmartialarts.com",
     isPrivate: true,
     color: "rose",
     category: "Web / Frontend",
