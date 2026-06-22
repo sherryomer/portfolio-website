@@ -54,7 +54,7 @@ const projects = [
       "A psychological murder-mystery web game where every decision rewrites the outcome. You wake in a hotel room with a body, no memory, and a detective at the door. 5 acts of branching choices unlock fragmented memory shards and four true endings — plus a hidden fifth that assembles the real night. All progress persists in the browser.",
     tech: ["TypeScript", "Next.js 14", "Tailwind CSS", "Framer Motion", "Zustand"],
     github: null,
-    liveUrl: "https://room-404.vercel.app",
+    liveUrl: "https://room-404-ruby.vercel.app",
     isPrivate: true,
     color: "violet",
     category: "Game / Interactive",
