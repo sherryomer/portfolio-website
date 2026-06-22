@@ -33,7 +33,7 @@ export function Hero() {
   }
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 pt-20">
+    <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-8 pt-20">
       <div className="absolute inset-0 bg-[#070710]" />
       <div className="absolute inset-0 grid-overlay" />
       <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_70%_50%_at_50%_-20%,rgba(8,145,178,0.08)_0%,transparent_70%)]" />

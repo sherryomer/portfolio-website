@@ -51,7 +51,7 @@ export function Education() {
                     Bachelor&apos;s in Computer Science
                   </h3>
                   <p className="text-cyan-400 font-semibold text-sm mb-1">
-                    Lahore University of Management Sciences
+                    Lahore University of Management Sciences (LUMS)
                   </p>
                   <div className="flex items-center gap-2 text-slate-500 text-xs">
                     <Calendar className="w-3.5 h-3.5 shrink-0" />
