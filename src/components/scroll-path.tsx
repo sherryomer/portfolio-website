@@ -7,6 +7,7 @@ import { motion, useScroll } from "framer-motion"
 const SECTION_IDS = ["hero", "experience", "projects", "skills", "education", "contact"]
 
 type Point = { x: number; y: number }
+type Geom = { railX: number; halo: number; mid: number; core: number; stroke: number }
 
 // SSR-safe layout effect.
 const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect
@@ -27,9 +28,13 @@ function buildPath(points: Point[]): string {
   return d
 }
 
+const clamp = (v: number, lo: number, hi: number) => Math.min(Math.max(v, lo), hi)
+
 export function ScrollPath() {
   const [dims, setDims] = useState({ width: 0, height: 0 })
-  const [points, setPoints] = useState<Point[]>([])
+  const [nodes, setNodes] = useState<Point[]>([])
+  const [pathD, setPathD] = useState("")
+  const [geom, setGeom] = useState<Geom>({ railX: 0, halo: 0, mid: 0, core: 0, stroke: 2 })
   const [active, setActive] = useState<boolean[]>(() => SECTION_IDS.map(() => false))
   const reduced = useRef(false)
   const last = useRef({ width: 0, height: 0 })
@@ -51,38 +56,81 @@ export function ScrollPath() {
     if (
       width === last.current.width &&
       Math.abs(height - last.current.height) < 4 &&
-      points.length
+      nodes.length
     ) {
       return
     }
     last.current = { width, height }
 
     const scrollY = window.scrollY
-    const isMobile = width < 768
 
-    // A consistent left-margin "rail". On wide screens it sits in the gutter to
-    // the left of the centred content (max-w-5xl ≈ 1024px); on narrow screens it
-    // tucks into the section padding. It never crosses the content.
-    const contentHalf = 512
-    const gutterLeft = Math.max(width / 2 - contentHalf, 0)
-    const laneX = isMobile
-      ? 22
-      : Math.max(36, Math.min(gutterLeft - 44, 132))
-    const amp = isMobile ? 8 : 22
+    // Sections use different content widths (max-w-5xl/6xl/7xl) centred with
+    // px-4/6/8 padding, so there's no consistent side gutter. We measure each
+    // section's real content box (top/bottom/left). The line then:
+    //   • hugs the left padding gutter while passing a section's content
+    //     (the one strip guaranteed empty at every width), and
+    //   • swoops rightward into the EMPTY vertical gap between sections.
+    // That keeps a genuine winding "journey" feel while never crossing content.
+    const fallbackPad = width >= 1024 ? 32 : width >= 640 ? 24 : 16
+    let gutter = Infinity
+    const boxes: { top: number; bottom: number; center: number }[] = []
 
-    const pts: Point[] = []
-    SECTION_IDS.forEach((id, i) => {
+    SECTION_IDS.forEach((id) => {
       const el = document.getElementById(id)
       if (!el) return
-      const rect = el.getBoundingClientRect()
-      const centerY = rect.top + scrollY + rect.height / 2
-      // Gentle alternating wave; first node starts on the rail centre.
-      const offset = i === 0 ? 0 : (i % 2 === 0 ? -1 : 1) * amp
-      pts.push({ x: laneX + offset, y: centerY })
+      // Target the real content wrapper (the centred max-w-* container), NOT the
+      // section's first child — that can be a full-bleed decorative background.
+      // The section's own padding-left is a guaranteed-empty floor for the rail.
+      const container = el.querySelector<HTMLElement>('[class*="max-w-"]')
+      const padLeft = parseFloat(getComputedStyle(el).paddingLeft) || fallbackPad
+      const cr = container?.getBoundingClientRect()
+      const left = cr && cr.width > 0 ? Math.max(padLeft, cr.left) : padLeft
+      gutter = Math.min(gutter, left)
+
+      const box = cr && cr.width > 0 ? cr : el.getBoundingClientRect()
+      const top = box.top + scrollY
+      const bottom = box.bottom + scrollY
+      boxes.push({ top, bottom, center: (top + bottom) / 2 })
     })
 
+    if (boxes.length < 2) return
+    if (!Number.isFinite(gutter)) gutter = fallbackPad
+    gutter = Math.max(gutter, 10)
+
+    // Rail centreline + node radii fit inside the (tightest) left gutter, with
+    // ~4px clearance from content. Capped so it stays slim on ultrawide screens.
+    const railX = clamp(gutter * 0.42, 8, 60)
+    const halo = clamp(gutter - railX - 4, 3, 13)
+    const mid = halo * 0.55
+    const core = Math.max(2.2, halo * 0.34)
+    const stroke = halo > 9 ? 2 : 1.5
+
+    // How far the line swoops into the empty inter-section gap.
+    const bowAmp = width < 768 ? clamp(width * 0.16, 40, 72) : clamp(width * 0.2, 110, 240)
+    const bowX = railX + bowAmp
+
+    // Waypoints: down the rail through each content box, bow through each gap.
+    const wp: Point[] = []
+    boxes.forEach((b, i) => {
+      wp.push({ x: railX, y: b.top })
+      wp.push({ x: railX, y: b.bottom })
+      if (i < boxes.length - 1) {
+        const gapTop = b.bottom
+        const gapBottom = boxes[i + 1].top
+        // Only swoop when there's real empty vertical room; otherwise stay rail.
+        if (gapBottom - gapTop > 48) {
+          wp.push({ x: bowX, y: (gapTop + gapBottom) / 2 })
+        }
+      }
+    })
+
+    // Nodes sit on the rail at each section's content centre.
+    const nds: Point[] = boxes.map((b) => ({ x: railX, y: b.center }))
+
     setDims({ width, height })
-    setPoints(pts)
+    setGeom({ railX, halo, mid, core, stroke })
+    setPathD(buildPath(wp))
+    setNodes(nds)
   }
 
   useIsoLayoutEffect(() => {
@@ -140,11 +188,9 @@ export function ScrollPath() {
     return () => observer.disconnect()
   }, [])
 
-  if (dims.width === 0 || points.length < 2) return null
+  if (dims.width === 0 || nodes.length < 2 || !pathD) return null
 
-  const isMobile = dims.width < 768
-  const pathD = buildPath(points)
-  const strokeW = isMobile ? 1.5 : 2
+  const strokeW = geom.stroke
 
   return (
     <div
@@ -198,14 +244,14 @@ export function ScrollPath() {
         />
 
         {/* Section nodes — glow (via cheap concentric circles) once reached. */}
-        {points.map((p, i) => {
+        {nodes.map((p, i) => {
           const lit = active[i]
           return (
             <g key={SECTION_IDS[i]}>
               <circle
                 cx={p.x}
                 cy={p.y}
-                r={lit ? 11 : 0}
+                r={lit ? geom.halo : 0}
                 fill="#22d3ee"
                 opacity={lit ? 0.14 : 0}
                 style={{ transition: "r 350ms ease, opacity 350ms ease" }}
@@ -213,7 +259,7 @@ export function ScrollPath() {
               <circle
                 cx={p.x}
                 cy={p.y}
-                r={lit ? 6.5 : 4}
+                r={lit ? geom.mid : geom.core}
                 fill="#22d3ee"
                 opacity={lit ? 0.28 : 0}
                 style={{ transition: "r 350ms ease, opacity 350ms ease" }}
@@ -221,7 +267,7 @@ export function ScrollPath() {
               <circle
                 cx={p.x}
                 cy={p.y}
-                r={lit ? 3.5 : 2.5}
+                r={lit ? geom.core : Math.max(2, geom.core - 1)}
                 fill={lit ? "#67e8f9" : "#475569"}
                 style={{ transition: "r 350ms ease, fill 350ms ease" }}
               />
