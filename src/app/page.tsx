@@ -6,10 +6,12 @@ import { Education } from "@/components/sections/education"
 import { Contact } from "@/components/sections/contact"
 import { Navigation } from "@/components/navigation"
 import { TimelineNav } from "@/components/timeline-nav"
+import { ScrollPath } from "@/components/scroll-path"
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#070710] overflow-x-hidden">
+    <main className="relative min-h-screen bg-[#070710] overflow-x-hidden">
+      <ScrollPath />
       <Navigation />
       <TimelineNav />
       <Hero />
