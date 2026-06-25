@@ -1,31 +1,28 @@
 "use client"
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
-import { motion, useScroll, useSpring } from "framer-motion"
+import { motion, useScroll } from "framer-motion"
 
-// Sections the journey line connects, in vertical order down the page.
+// Sections the journey line connects, top to bottom.
 const SECTION_IDS = ["hero", "experience", "projects", "skills", "education", "contact"]
 
 type Point = { x: number; y: number }
 
-// SSR-safe layout effect (avoids hydration warning when there's no DOM).
+// SSR-safe layout effect.
 const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect
 
-// Build a smooth vertical S-curve through the anchor points using cubic beziers
-// whose control points sit at the vertical midpoint between neighbours. This
-// makes the left/right crossings happen in the gaps *between* sections.
+// Smooth vertical curve through the anchors: cubic beziers whose control points
+// sit at the vertical midpoint between neighbours, so transitions stay gentle.
 function buildPath(points: Point[]): string {
-  if (points.length === 0) return ""
-  if (points.length === 1) return `M ${points[0].x} ${points[0].y}`
-
+  if (points.length < 2) return points.length ? `M ${points[0].x} ${points[0].y}` : ""
   let d = `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`
   for (let i = 1; i < points.length; i++) {
     const prev = points[i - 1]
     const cur = points[i]
-    const midY = (prev.y + cur.y) / 2
-    d += ` C ${prev.x.toFixed(1)} ${midY.toFixed(1)}, ${cur.x.toFixed(1)} ${midY.toFixed(
+    const my = ((prev.y + cur.y) / 2).toFixed(1)
+    d += ` C ${prev.x.toFixed(1)} ${my}, ${cur.x.toFixed(1)} ${my}, ${cur.x.toFixed(
       1
-    )}, ${cur.x.toFixed(1)} ${cur.y.toFixed(1)}`
+    )} ${cur.y.toFixed(1)}`
   }
   return d
 }
@@ -34,18 +31,13 @@ export function ScrollPath() {
   const [dims, setDims] = useState({ width: 0, height: 0 })
   const [points, setPoints] = useState<Point[]>([])
   const [active, setActive] = useState<boolean[]>(() => SECTION_IDS.map(() => false))
-  const reducedMotion = useRef(false)
+  const reduced = useRef(false)
+  const last = useRef({ width: 0, height: 0 })
 
-  // Scroll progress across the whole document (0 at top → 1 at bottom).
+  // Draw progress is tied DIRECTLY to scroll (no spring) so there's zero idle
+  // repaint work — the line only redraws while the user is actually scrolling.
   const { scrollYProgress } = useScroll()
-  // Smooth the raw progress so the line draws fluidly instead of snapping.
-  const drawProgress = useSpring(scrollYProgress, {
-    stiffness: 80,
-    damping: 24,
-    restDelta: 0.001,
-  })
 
-  // Measure the document + each section, then compute the winding anchor points.
   const measure = () => {
     if (typeof window === "undefined") return
 
@@ -54,16 +46,29 @@ export function ScrollPath() {
       document.documentElement.scrollHeight,
       document.body.scrollHeight
     )
+
+    // Skip redundant updates (avoids re-render storms from sub-pixel reflows).
+    if (
+      width === last.current.width &&
+      Math.abs(height - last.current.height) < 4 &&
+      points.length
+    ) {
+      return
+    }
+    last.current = { width, height }
+
     const scrollY = window.scrollY
-
     const isMobile = width < 768
-    const cx = width / 2
 
-    // Desktop: anchors sit near the edges of the centered content (max-w-5xl ≈
-    // 1024px) so the line sweeps through the gutters and inter-section gaps.
-    // Mobile: keep a thin, gently-waving line pinned to the left gutter.
-    const amplitude = isMobile ? Math.min(width * 0.06, 22) : Math.min(width * 0.3, 340)
-    const baseX = isMobile ? Math.max(width * 0.07, 22) : cx
+    // A consistent left-margin "rail". On wide screens it sits in the gutter to
+    // the left of the centred content (max-w-5xl ≈ 1024px); on narrow screens it
+    // tucks into the section padding. It never crosses the content.
+    const contentHalf = 512
+    const gutterLeft = Math.max(width / 2 - contentHalf, 0)
+    const laneX = isMobile
+      ? 22
+      : Math.max(36, Math.min(gutterLeft - 44, 132))
+    const amp = isMobile ? 8 : 22
 
     const pts: Point[] = []
     SECTION_IDS.forEach((id, i) => {
@@ -71,11 +76,9 @@ export function ScrollPath() {
       if (!el) return
       const rect = el.getBoundingClientRect()
       const centerY = rect.top + scrollY + rect.height / 2
-      // Alternate sides to create the winding/snake effect.
-      const dir = i % 2 === 0 ? -1 : 1
-      // Hero (first) starts centred for a clean entry point.
-      const offset = i === 0 ? (isMobile ? 0 : 0) : dir * amplitude
-      pts.push({ x: baseX + offset, y: centerY })
+      // Gentle alternating wave; first node starts on the rail centre.
+      const offset = i === 0 ? 0 : (i % 2 === 0 ? -1 : 1) * amp
+      pts.push({ x: laneX + offset, y: centerY })
     })
 
     setDims({ width, height })
@@ -83,29 +86,27 @@ export function ScrollPath() {
   }
 
   useIsoLayoutEffect(() => {
-    reducedMotion.current =
+    reduced.current =
       typeof window !== "undefined" &&
-      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+      !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
 
     measure()
 
     let raf = 0
-    const onResize = () => {
+    const schedule = () => {
       cancelAnimationFrame(raf)
       raf = requestAnimationFrame(measure)
     }
 
-    window.addEventListener("resize", onResize)
-
-    // Recompute when content reflows (fonts/images loading, dynamic heights).
-    const ro = new ResizeObserver(onResize)
+    window.addEventListener("resize", schedule)
+    // Recompute when the document height changes (fonts/images, dynamic content).
+    const ro = new ResizeObserver(schedule)
     ro.observe(document.body)
-
-    // One more pass after fonts settle.
-    const t = window.setTimeout(measure, 400)
+    // Settle pass after fonts load.
+    const t = window.setTimeout(measure, 450)
 
     return () => {
-      window.removeEventListener("resize", onResize)
+      window.removeEventListener("resize", schedule)
       ro.disconnect()
       cancelAnimationFrame(raf)
       window.clearTimeout(t)
@@ -113,32 +114,29 @@ export function ScrollPath() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  // Activate a section's node once it scrolls into view (stays lit afterwards).
+  // Light a section's node once it enters view (stays lit afterwards).
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         setActive((prev) => {
-          const next = [...prev]
-          let changed = false
+          let next = prev
           entries.forEach((entry) => {
             if (!entry.isIntersecting) return
             const idx = SECTION_IDS.indexOf(entry.target.id)
             if (idx !== -1 && !next[idx]) {
+              if (next === prev) next = [...prev]
               next[idx] = true
-              changed = true
             }
           })
-          return changed ? next : prev
+          return next
         })
       },
       { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
     )
-
     SECTION_IDS.forEach((id) => {
       const el = document.getElementById(id)
       if (el) observer.observe(el)
     })
-
     return () => observer.disconnect()
   }, [])
 
@@ -147,21 +145,27 @@ export function ScrollPath() {
   const isMobile = dims.width < 768
   const pathD = buildPath(points)
   const strokeW = isMobile ? 1.5 : 2
-  const accent = "#22d3ee" // cyan-400, matches the site accent
 
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 top-0 left-0 z-[1] overflow-hidden"
-      style={{ height: dims.height }}
+      className="pointer-events-none absolute inset-0 z-[1]"
+      style={{
+        height: dims.height,
+        // Promote to its own GPU layer so page scrolling just translates this
+        // layer instead of triggering main-thread repaints of a huge surface.
+        transform: "translateZ(0)",
+        willChange: "transform",
+        contain: "layout paint style",
+      }}
     >
       <svg
         width={dims.width}
         height={dims.height}
         viewBox={`0 0 ${dims.width} ${dims.height}`}
         fill="none"
+        shapeRendering="geometricPrecision"
         className="absolute inset-0"
-        preserveAspectRatio="xMidYMin meet"
       >
         <defs>
           <linearGradient id="scrollpath-grad" x1="0" y1="0" x2="0" y2="1">
@@ -169,62 +173,57 @@ export function ScrollPath() {
             <stop offset="55%" stopColor="#38bdf8" />
             <stop offset="100%" stopColor="#818cf8" />
           </linearGradient>
-          <filter id="scrollpath-glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="4" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
         </defs>
 
-        {/* Faint full track of the road (undrawn portion). */}
+        {/* Faint full track (painted once, never animates). */}
         <path
           d={pathD}
           stroke="#ffffff"
-          strokeOpacity={0.06}
+          strokeOpacity={0.07}
           strokeWidth={strokeW}
           strokeLinecap="round"
           vectorEffect="non-scaling-stroke"
         />
 
-        {/* The drawn portion — reveals from top to bottom as you scroll. */}
+        {/* Drawn portion — reveals top→bottom, bound straight to scroll. No
+            filters, so the per-frame repaint stays cheap. */}
         <motion.path
           d={pathD}
           stroke="url(#scrollpath-grad)"
           strokeWidth={strokeW}
           strokeLinecap="round"
+          strokeOpacity={0.9}
           vectorEffect="non-scaling-stroke"
-          filter="url(#scrollpath-glow)"
-          style={
-            reducedMotion.current
-              ? { pathLength: 1, opacity: 0.7 }
-              : { pathLength: drawProgress, opacity: 0.85 }
-          }
+          style={{ pathLength: reduced.current ? 1 : scrollYProgress }}
         />
 
-        {/* Section nodes — glow once their section is reached. */}
+        {/* Section nodes — glow (via cheap concentric circles) once reached. */}
         {points.map((p, i) => {
           const lit = active[i]
           return (
             <g key={SECTION_IDS[i]}>
-              {/* outer halo */}
               <circle
                 cx={p.x}
                 cy={p.y}
-                r={lit ? 9 : 5}
-                fill={accent}
-                opacity={lit ? 0.18 : 0.08}
-                style={{ transition: "r 400ms ease, opacity 400ms ease" }}
+                r={lit ? 11 : 0}
+                fill="#22d3ee"
+                opacity={lit ? 0.14 : 0}
+                style={{ transition: "r 350ms ease, opacity 350ms ease" }}
               />
-              {/* core node */}
               <circle
                 cx={p.x}
                 cy={p.y}
-                r={lit ? 4 : 2.5}
-                fill={lit ? accent : "#475569"}
-                filter={lit ? "url(#scrollpath-glow)" : undefined}
-                style={{ transition: "r 400ms ease, fill 400ms ease" }}
+                r={lit ? 6.5 : 4}
+                fill="#22d3ee"
+                opacity={lit ? 0.28 : 0}
+                style={{ transition: "r 350ms ease, opacity 350ms ease" }}
+              />
+              <circle
+                cx={p.x}
+                cy={p.y}
+                r={lit ? 3.5 : 2.5}
+                fill={lit ? "#67e8f9" : "#475569"}
+                style={{ transition: "r 350ms ease, fill 350ms ease" }}
               />
             </g>
           )
