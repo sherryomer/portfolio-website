@@ -3,6 +3,7 @@
 import { motion } from "framer-motion"
 import { Mail, MapPin, Send } from "lucide-react"
 import { useState } from "react"
+import { SectionHeader } from "@/components/section-header"
 
 const GithubIcon = ({ className }: { className?: string }) => (
   <svg className={className} fill="currentColor" viewBox="0 0 24 24">
@@ -77,23 +78,15 @@ export function Contact() {
   }
 
   return (
-    <section id="contact" className="py-28 px-4 sm:px-6 lg:px-8 bg-[#070710]">
-      <div className="max-w-6xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-20"
-        >
-          <p className="text-cyan-500 font-mono text-xs mb-3 tracking-[0.2em] uppercase">06 / Contact</p>
-          <h2 className="text-4xl sm:text-5xl font-black text-white mb-4 leading-tight">
-            Let&apos;s <span className="text-cyan-400">Connect</span>
-          </h2>
-          <p className="text-slate-400 text-lg max-w-lg leading-relaxed">
-            Open to AI/ML roles, consulting, and interesting projects. Drop me a message.
-          </p>
-        </motion.div>
+    <section id="contact" className="py-24 sm:py-32 px-5 sm:px-8 lg:px-12 bg-[#070710]">
+      <div className="max-w-6xl mx-auto lg:pl-16">
+        <SectionHeader
+          tag="contact.io"
+          meta="open · hiring-ready"
+          title={<>Let&apos;s <span className="text-cyan-400">Connect</span></>}
+          sub="Open to AI/ML roles, consulting, and interesting projects. Drop me a message."
+          className="mb-16 sm:mb-20"
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {/* Left */}
@@ -132,9 +125,9 @@ export function Contact() {
                     : <Icon className="w-5 h-5" />
                   }
                 </div>
-                <div>
-                  <p className="text-slate-500 text-[11px] uppercase tracking-wider">{label}</p>
-                  <p className="text-white text-sm font-medium mt-0.5">{value}</p>
+                <div className="min-w-0">
+                  <p className="mono-label">{label}</p>
+                  <p className="text-slate-200 text-sm font-mono mt-0.5 truncate">{value}</p>
                 </div>
               </motion.a>
             ))}
@@ -148,7 +141,13 @@ export function Contact() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="lg:col-span-3"
           >
-            <div className="p-8 rounded-3xl bg-white/[0.025] border border-white/[0.08] h-full">
+            <div className="p-7 sm:p-8 rounded-2xl bg-white/[0.02] border border-white/[0.08] h-full">
+              {status !== "sent" && (
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="mono-label">{"// send a message"}</span>
+                  <span className="flex-1 border-t border-dashed border-white/[0.09]" />
+                </div>
+              )}
               {status === "sent" ? (
                 <div className="flex flex-col items-center justify-center h-full py-16 text-center">
                   <motion.div
@@ -172,7 +171,7 @@ export function Contact() {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs text-slate-500 uppercase tracking-wider mb-2">Name</label>
+                      <label className="block mono-label mb-2">Name</label>
                       <input
                         name="name"
                         type="text"
@@ -182,7 +181,7 @@ export function Contact() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs text-slate-500 uppercase tracking-wider mb-2">Email</label>
+                      <label className="block mono-label mb-2">Email</label>
                       <input
                         name="email"
                         type="email"
@@ -193,7 +192,7 @@ export function Contact() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs text-slate-500 uppercase tracking-wider mb-2">Subject</label>
+                    <label className="block mono-label mb-2">Subject</label>
                     <input
                       name="subject"
                       type="text"
@@ -203,7 +202,7 @@ export function Contact() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs text-slate-500 uppercase tracking-wider mb-2">Message</label>
+                    <label className="block mono-label mb-2">Message</label>
                     <textarea
                       name="message"
                       required

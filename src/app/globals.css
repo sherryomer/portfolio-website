@@ -17,6 +17,16 @@
   html {
     scroll-behavior: smooth;
   }
+  /* Offset anchored/scroll-into-view targets below the fixed nav (+ mobile
+     status strip) so section headers aren't tucked under the chrome. */
+  section[id] {
+    scroll-margin-top: 7rem;
+  }
+  @media (min-width: 768px) {
+    section[id] {
+      scroll-margin-top: 6rem;
+    }
+  }
   body {
     @apply bg-[#070710] text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -29,6 +39,18 @@
 @layer utilities {
   .text-accent {
     @apply text-cyan-400;
+  }
+
+  /* Monospace "chrome" — labels, indices, field tags */
+  .mono-label {
+    @apply font-mono text-[11px] uppercase tracking-[0.18em] text-slate-500;
+  }
+  .mono-tag {
+    @apply font-mono text-xs tracking-tight text-cyan-400/80;
+  }
+  /* dotted leader fill for key···value status rows */
+  .leader {
+    @apply flex-1 border-b border-dotted border-white/15 translate-y-[-3px];
   }
 
   .glass {
@@ -83,4 +105,39 @@
     linear-gradient(rgba(255, 255, 255, 0.018) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px);
   background-size: 64px 64px;
+}
+
+/* Marquee ticker (Skills · Daily Stack) */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: inline-flex;
+  white-space: nowrap;
+  animation: marquee 38s linear infinite;
+}
+.marquee-mask:hover .marquee-track {
+  animation-play-state: paused;
+}
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
 }

@@ -46,20 +46,22 @@ export function Navigation() {
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 sm:h-20">
             <motion.button
-              whileHover={{ scale: 1.04 }}
-              whileTap={{ scale: 0.96 }}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="text-xl font-black tracking-tight"
+              className="flex items-center gap-2 font-mono text-sm tracking-tight"
             >
-              <span className="text-gradient">Shehryar.</span>
+              <span className="text-cyan-400 text-xs">◆</span>
+              <span className="text-white font-medium">shehryar</span>
+              <span className="text-cyan-500/60">.sys</span>
             </motion.button>
 
-            <div className="hidden md:flex items-center gap-0.5">
+            <div className="hidden md:flex items-center gap-1">
               {navItems.map((item) => (
                 <button
                   key={item.name}
                   onClick={() => scrollToSection(item.href)}
-                  className="px-4 py-2 rounded-xl text-sm text-slate-400 hover:text-white hover:bg-white/[0.07] transition-all duration-200 font-medium"
+                  className="px-3 py-2 rounded-lg font-mono text-[13px] text-slate-400 hover:text-cyan-300 hover:bg-white/[0.05] transition-all duration-200 lowercase"
                 >
                   {item.name}
                 </button>
@@ -68,10 +70,10 @@ export function Navigation() {
                 href="https://github.com/sherryomer"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-4 flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.07] hover:bg-white/[0.12] text-white text-sm font-medium transition-all duration-200 border border-white/[0.1] hover:border-white/[0.18]"
+                className="ml-3 flex items-center gap-2 px-3.5 py-2 rounded-lg bg-white/[0.05] hover:bg-white/[0.1] text-white font-mono text-[13px] transition-all duration-200 border border-white/[0.1] hover:border-white/[0.18]"
               >
                 <GithubIcon />
-                GitHub
+                github
               </a>
             </div>
 
@@ -102,8 +104,9 @@ export function Navigation() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.07 }}
                   onClick={() => scrollToSection(item.href)}
-                  className="block w-full text-left px-4 py-3 text-slate-300 hover:text-white hover:bg-white/[0.07] rounded-xl transition-colors text-sm font-medium"
+                  className="flex w-full items-center gap-3 text-left px-4 py-3 text-slate-300 hover:text-cyan-300 hover:bg-white/[0.07] rounded-xl transition-colors font-mono text-sm lowercase"
                 >
+                  <span className="text-slate-600 text-xs tabular-nums">{String(i + 1).padStart(2, "0")}</span>
                   {item.name}
                 </motion.button>
               ))}
@@ -117,10 +120,10 @@ export function Navigation() {
                   href="https://github.com/sherryomer"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl bg-white/[0.07] text-white text-sm font-medium"
+                  className="flex items-center justify-center gap-2 w-full px-4 py-3 rounded-xl bg-white/[0.07] text-white font-mono text-sm lowercase"
                 >
                   <GithubIcon />
-                  View GitHub
+                  view github
                 </a>
               </motion.div>
             </div>

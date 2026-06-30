@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { Brain, Code2, Layers, Mic, LineChart, Database } from "lucide-react"
+import { SectionHeader } from "@/components/section-header"
 
 const skillGroups = [
   {
@@ -67,25 +68,15 @@ const skillGroups = [
   },
 ]
 
-const colorConfig = {
-  cyan: {
-    iconBg: "bg-cyan-500/12",
-    iconText: "text-cyan-400",
-    tag: "bg-cyan-500/10 border-cyan-500/20 text-cyan-300 hover:bg-cyan-500/18",
-    label: "text-cyan-400",
-  },
-  amber: {
-    iconBg: "bg-amber-500/12",
-    iconText: "text-amber-400",
-    tag: "bg-amber-500/10 border-amber-500/20 text-amber-300 hover:bg-amber-500/18",
-    label: "text-amber-400",
-  },
-  slate: {
-    iconBg: "bg-slate-500/12",
-    iconText: "text-slate-400",
-    tag: "bg-slate-500/10 border-slate-500/20 text-slate-300 hover:bg-slate-500/18",
-    label: "text-slate-400",
-  },
+const labelColor: Record<string, string> = {
+  cyan: "text-cyan-400",
+  amber: "text-amber-400",
+  slate: "text-slate-400",
+}
+const iconBg: Record<string, string> = {
+  cyan: "bg-cyan-500/12 text-cyan-400",
+  amber: "bg-amber-500/12 text-amber-400",
+  slate: "bg-slate-500/12 text-slate-400",
 }
 
 const allTech = [
@@ -97,84 +88,79 @@ const allTech = [
 
 export function Skills() {
   return (
-    <section id="skills" className="py-28 px-4 sm:px-6 lg:px-8 section-alt">
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-20"
-        >
-          <p className="text-cyan-500 font-mono text-xs mb-3 tracking-[0.2em] uppercase">04 / Skills</p>
+    <section id="skills" className="py-24 sm:py-32 px-5 sm:px-8 lg:px-12 section-alt">
+      <div className="max-w-5xl mx-auto lg:pl-16">
+        <SectionHeader
+          tag="skills.map"
+          meta={`${skillGroups.length} domains`}
+          title={<>My <span className="text-cyan-400">Toolkit</span></>}
+          sub="Technologies I reach for when building AI systems, ML models, and data products."
+          className="mb-16 sm:mb-20"
+        />
 
-          <h2 className="text-4xl sm:text-5xl font-black text-white mb-4 leading-tight">
-            My <span className="text-cyan-400">Toolkit</span>
-          </h2>
-          <p className="text-slate-400 text-lg max-w-lg leading-relaxed">
-            Technologies I reach for when building AI systems, ML models, and data products.
-          </p>
-        </motion.div>
+        {/* Typographic matrix — category (left) · skill manifest (right), rule-separated rows */}
+        <div className="border-t border-white/[0.1]">
+          {skillGroups.map((group, index) => (
+            <motion.div
+              key={group.id}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.06 }}
+              className="group grid grid-cols-1 md:grid-cols-[minmax(0,13rem)_1fr] gap-2 md:gap-8 py-6 border-b border-white/[0.1] hover:bg-white/[0.012] transition-colors"
+            >
+              {/* category cell */}
+              <div className="flex items-center gap-3">
+                <span className="font-mono text-[11px] text-slate-600 tabular-nums">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className={`p-1.5 rounded-lg ${iconBg[group.color]}`}>
+                  <group.icon className="w-4 h-4" />
+                </span>
+                <h3 className={`font-mono text-sm font-medium ${labelColor[group.color]}`}>
+                  {group.name}
+                </h3>
+              </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
-          {skillGroups.map((group, index) => {
-            const c = colorConfig[group.color as keyof typeof colorConfig]
-            return (
-              <motion.div
-                key={group.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.55, delay: index * 0.08 }}
-                className="p-6 rounded-3xl bg-white/[0.025] border border-white/[0.08] hover:border-white/[0.13] hover:bg-white/[0.04] transition-all duration-300"
-              >
-                <div className="flex items-center gap-3 mb-5">
-                  <div className={`p-2.5 rounded-xl ${c.iconBg}`}>
-                    <group.icon className={`w-5 h-5 ${c.iconText}`} />
-                  </div>
-                  <h3 className={`font-bold text-sm ${c.label}`}>{group.name}</h3>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {group.skills.map((skill, i) => (
-                    <motion.span
-                      key={skill}
-                      initial={{ opacity: 0, scale: 0.85 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: index * 0.05 + i * 0.035, duration: 0.3 }}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-medium border transition-colors cursor-default ${c.tag}`}
-                    >
-                      {skill}
-                    </motion.span>
-                  ))}
-                </div>
-              </motion.div>
-            )
-          })}
+              {/* skill manifest — flowing, middot-separated, not pills */}
+              <p className="text-slate-300 leading-relaxed text-sm sm:text-[15px] md:pt-0.5 pl-8 md:pl-0">
+                {group.skills.map((skill, i) => (
+                  <span key={skill}>
+                    <span className="hover:text-cyan-300 transition-colors">{skill}</span>
+                    {i < group.skills.length - 1 && (
+                      <span className="text-slate-700 px-1.5">/</span>
+                    )}
+                  </span>
+                ))}
+              </p>
+            </motion.div>
+          ))}
         </div>
 
+        {/* Daily Stack as a marquee ticker (real author-labeled data) */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="p-8 rounded-3xl bg-white/[0.025] border border-white/[0.08]"
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mt-16"
         >
-          <p className="text-center text-slate-500 text-xs font-medium mb-6 uppercase tracking-[0.18em]">Daily Stack</p>
-          <div className="flex flex-wrap justify-center gap-2.5">
-            {allTech.map((tech, i) => (
-              <motion.span
-                key={`${tech}-${i}`}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.03 }}
-                whileHover={{ scale: 1.05, y: -2 }}
-                className="px-4 py-2 rounded-xl text-sm bg-white/[0.04] border border-white/[0.08] text-slate-300 hover:border-cyan-500/30 hover:text-cyan-300 hover:bg-cyan-500/[0.07] transition-all duration-200 cursor-default"
-              >
-                {tech}
-              </motion.span>
-            ))}
+          <div className="flex items-center gap-3 mb-5">
+            <span className="mono-label">{"// daily stack"}</span>
+            <span className="flex-1 border-t border-dashed border-white/[0.09]" />
+          </div>
+          <div className="marquee-mask overflow-hidden">
+            <div className="marquee-track">
+              {[...allTech, ...allTech].map((tech, i) => (
+                <span
+                  key={`${tech}-${i}`}
+                  className="font-mono text-sm text-slate-400 mx-5 inline-flex items-center gap-5"
+                >
+                  {tech}
+                  <span className="text-cyan-500/40">◆</span>
+                </span>
+              ))}
+            </div>
           </div>
         </motion.div>
       </div>

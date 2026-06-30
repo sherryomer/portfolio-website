@@ -1,7 +1,8 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { ExternalLink, Lock, Globe } from "lucide-react"
+import { ArrowUpRight, Lock } from "lucide-react"
+import { SectionHeader } from "@/components/section-header"
 
 const projects = [
   {
@@ -104,123 +105,120 @@ const projects = [
   },
 ]
 
-const colorConfig = {
-  cyan: {
-    badge: "bg-cyan-500/12 border-cyan-500/25 text-cyan-300",
-    tag: "bg-cyan-500/10 border-cyan-500/20 text-cyan-300",
-    topBar: "from-transparent via-cyan-500/50 to-transparent",
-    hover: "hover:border-cyan-500/25",
-  },
-  amber: {
-    badge: "bg-amber-500/12 border-amber-500/25 text-amber-300",
-    tag: "bg-amber-500/10 border-amber-500/20 text-amber-300",
-    topBar: "from-transparent via-amber-500/50 to-transparent",
-    hover: "hover:border-amber-500/25",
-  },
-  slate: {
-    badge: "bg-slate-500/12 border-slate-500/25 text-slate-300",
-    tag: "bg-slate-500/10 border-slate-500/20 text-slate-300",
-    topBar: "from-transparent via-slate-500/40 to-transparent",
-    hover: "hover:border-slate-500/25",
-  },
-  rose: {
-    badge: "bg-rose-500/12 border-rose-500/25 text-rose-300",
-    tag: "bg-rose-500/10 border-rose-500/20 text-rose-300",
-    topBar: "from-transparent via-rose-500/50 to-transparent",
-    hover: "hover:border-rose-500/25",
-  },
-  violet: {
-    badge: "bg-violet-500/12 border-violet-500/25 text-violet-300",
-    tag: "bg-violet-500/10 border-violet-500/20 text-violet-300",
-    topBar: "from-transparent via-violet-500/50 to-transparent",
-    hover: "hover:border-violet-500/25",
-  },
+const accentText: Record<string, string> = {
+  cyan: "text-cyan-300/90",
+  amber: "text-amber-300/90",
+  slate: "text-slate-300/90",
+  rose: "text-rose-300/90",
+  violet: "text-violet-300/90",
+}
+const accentHover: Record<string, string> = {
+  cyan: "hover:border-cyan-500/30",
+  amber: "hover:border-amber-500/30",
+  slate: "hover:border-slate-500/30",
+  rose: "hover:border-rose-500/30",
+  violet: "hover:border-violet-500/30",
+}
+const accentRule: Record<string, string> = {
+  cyan: "via-cyan-500/50",
+  amber: "via-amber-500/50",
+  slate: "via-slate-500/40",
+  rose: "via-rose-500/50",
+  violet: "via-violet-500/50",
 }
 
-function ProjectCard({
+// Deliberately varied column spans so no two cells match.
+// index → lg span class (featured handled separately).
+const spanFor = (i: number) => {
+  // pattern across the 6 non-featured entries on a 6-col grid
+  const spans = ["lg:col-span-2", "lg:col-span-2", "lg:col-span-3", "lg:col-span-3", "lg:col-span-2", "lg:col-span-2"]
+  return spans[i % spans.length]
+}
+
+function ProjectEntry({
   project,
+  reg,
   featured = false,
 }: {
   project: (typeof projects)[0]
+  reg: string
   featured?: boolean
 }) {
-  const c = colorConfig[project.color as keyof typeof colorConfig]
-
   return (
     <div
-      className={`group relative h-full rounded-3xl border bg-white/[0.025] ${c.hover} border-white/[0.08] hover:bg-white/[0.05] transition-all duration-500 flex flex-col overflow-hidden ${
-        featured ? "p-6 sm:p-8 min-h-[340px] sm:min-h-[380px]" : "p-5 sm:p-6"
+      className={`group relative h-full flex flex-col rounded-2xl border border-white/[0.08] bg-white/[0.02] ${accentHover[project.color]} transition-colors duration-300 overflow-hidden ${
+        featured ? "p-7 sm:p-9" : "p-5 sm:p-6"
       }`}
     >
-      {featured && (
-        <div className={`absolute top-0 left-0 right-0 h-px bg-gradient-to-r ${c.topBar} opacity-60`} />
-      )}
+      <div className={`absolute top-0 left-7 right-7 h-px bg-gradient-to-r from-transparent ${accentRule[project.color]} to-transparent opacity-0 group-hover:opacity-70 transition-opacity`} />
 
-      {/* Header row: category badge + private tag */}
-      <div className="flex items-center justify-between mb-4 sm:mb-5 gap-2">
-        <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-semibold border shrink-0 ${c.badge}`}>
-          {project.category}
+      {/* registry header line */}
+      <div className="flex items-center justify-between gap-3 mb-5 font-mono text-[11px]">
+        <span className="flex items-center gap-2 text-slate-600">
+          <span className="text-slate-700">{reg}</span>
+          <span className={accentText[project.color]}>{project.category}</span>
         </span>
         {project.isPrivate && (
-          <span className="flex items-center gap-1 text-[11px] text-slate-600">
+          <span className="flex items-center gap-1 text-slate-600 shrink-0">
             <Lock className="w-3 h-3" />
-            Private
+            private
           </span>
         )}
       </div>
 
-      {/* Content */}
-      <div className="flex-1 min-w-0">
-        <h3 className={`font-black text-white mb-1 leading-tight ${featured ? "text-xl sm:text-2xl md:text-3xl" : "text-base sm:text-lg"}`}>
-          {project.name}
-        </h3>
-        <p className={`mb-3 sm:mb-4 font-medium text-slate-500 ${featured ? "text-sm" : "text-xs"}`}>
-          {project.subtitle}
-        </p>
-        <p className={`text-slate-400 leading-relaxed ${featured ? "text-sm sm:text-base" : "text-xs sm:text-sm"}`}>
-          {project.description}
-        </p>
-      </div>
+      <h3
+        className={`font-display font-bold text-white tracking-tight leading-tight mb-1.5 ${
+          featured ? "text-3xl sm:text-4xl" : "text-lg sm:text-xl"
+        }`}
+      >
+        {project.name}
+      </h3>
+      <p className={`font-mono text-slate-500 mb-4 ${featured ? "text-sm" : "text-xs"}`}>
+        {project.subtitle}
+      </p>
 
-      {/* Tech tags */}
-      <div className="flex flex-wrap gap-1.5 mt-4 sm:mt-5">
-        {project.tech.map((t) => (
-          <span
-            key={t}
-            className={`px-2 sm:px-2.5 py-1 rounded-lg text-[10px] sm:text-[11px] font-mono font-medium border ${c.tag}`}
-          >
-            {t}
-          </span>
-        ))}
-      </div>
+      <p className={`text-slate-400 leading-relaxed ${featured ? "text-base max-w-xl" : "text-sm"}`}>
+        {project.description}
+      </p>
 
-      {/* Action buttons */}
-      {(project.liveUrl || (!project.isPrivate && project.github)) && (
-        <div className="flex items-center gap-2 mt-4 pt-4 border-t border-white/[0.06]">
-          {project.liveUrl && (
-            <a
-              href={project.liveUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 bg-white/[0.06] border border-white/[0.1] text-white hover:bg-white/[0.12] hover:border-white/[0.2]`}
-            >
-              <Globe className="w-3.5 h-3.5" />
-              Live Demo
-            </a>
-          )}
-          {!project.isPrivate && project.github && (
-            <a
-              href={project.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-200 bg-white/[0.04] border border-white/[0.08] text-slate-400 hover:text-white hover:bg-white/[0.08]"
-            >
-              <ExternalLink className="w-3.5 h-3.5" />
-              View Code
-            </a>
-          )}
-        </div>
-      )}
+      {/* stack as inline mono line, links as mono actions */}
+      <div className="mt-auto pt-6">
+        <p className="font-mono text-[11px] leading-relaxed mb-4">
+          <span className="text-slate-600">stack: </span>
+          {project.tech.map((t, i) => (
+            <span key={t}>
+              <span className="text-slate-400">{t}</span>
+              {i < project.tech.length - 1 && <span className="text-slate-700"> · </span>}
+            </span>
+          ))}
+        </p>
+        {(project.liveUrl || (!project.isPrivate && project.github)) && (
+          <div className="flex items-center gap-5 font-mono text-xs">
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/l flex items-center gap-1.5 text-white"
+              >
+                <span className="border-b border-cyan-400/40 group-hover/l:border-cyan-400 pb-0.5 transition-colors">live</span>
+                <ArrowUpRight className="w-3.5 h-3.5 text-cyan-400" />
+              </a>
+            )}
+            {!project.isPrivate && project.github && (
+              <a
+                href={project.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group/c flex items-center gap-1.5 text-slate-400 hover:text-white transition-colors"
+              >
+                <span className="border-b border-white/15 group-hover/c:border-white/40 pb-0.5 transition-colors">code</span>
+                <ArrowUpRight className="w-3.5 h-3.5" />
+              </a>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
@@ -230,82 +228,61 @@ export function Projects() {
   const rest = projects.filter((p) => !p.featured)
 
   return (
-    <section id="projects" className="py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#070710]">
-      <div className="max-w-7xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="mb-14 sm:mb-20"
-        >
-          <p className="text-cyan-500 font-mono text-xs mb-3 tracking-[0.2em] uppercase">03 / Projects</p>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-white mb-4 leading-tight">
-            Things I&apos;ve <span className="text-cyan-400">Built</span>
-          </h2>
-          <p className="text-slate-400 text-base sm:text-lg max-w-lg leading-relaxed">
-            Real projects — AI systems, ML models, and production applications.
-          </p>
-        </motion.div>
+    <section id="projects" className="py-24 sm:py-32 px-5 sm:px-8 lg:px-12 bg-[#070710]">
+      <div className="max-w-6xl mx-auto lg:pl-16">
+        <SectionHeader
+          tag="projects.registry"
+          meta={`${projects.length} records`}
+          title={<>Things I&apos;ve <span className="text-cyan-400">Built</span></>}
+          sub="Real projects — AI systems, ML models, and production applications."
+          className="mb-16 sm:mb-20"
+        />
 
-        {/* Bento grid — 1 col mobile, 2 col tablet, 3 col desktop */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        {/* Asymmetric registry: featured spans wide, rest vary column width */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 auto-rows-fr">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="sm:col-span-2 lg:col-span-2 lg:row-span-2"
+            className="sm:col-span-2 lg:col-span-6"
           >
-            <ProjectCard project={featured} featured />
+            <ProjectEntry project={featured} reg="reg/00" featured />
           </motion.div>
 
-          {rest.slice(0, 2).map((project, i) => (
+          {rest.map((project, i) => (
             <motion.div
               key={project.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: (i + 1) * 0.1 }}
+              transition={{ duration: 0.55, delay: (i % 2) * 0.08 }}
+              className={spanFor(i)}
             >
-              <ProjectCard project={project} />
-            </motion.div>
-          ))}
-
-          {rest.slice(2).map((project, i) => (
-            <motion.div
-              key={project.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: (i + 3) * 0.1 }}
-            >
-              <ProjectCard project={project} />
+              <ProjectEntry project={project} reg={`reg/${String(i + 1).padStart(2, "0")}`} />
             </motion.div>
           ))}
         </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="mt-8 sm:mt-10 flex justify-center"
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mt-12 flex justify-center sm:justify-start"
         >
-          <motion.a
+          <a
             href="https://github.com/sherryomer"
             target="_blank"
             rel="noopener noreferrer"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="group inline-flex items-center gap-3 px-6 sm:px-7 py-3 sm:py-3.5 rounded-2xl bg-white/[0.04] border border-white/[0.1] text-slate-300 hover:text-white hover:bg-white/[0.08] hover:border-white/[0.18] font-medium text-sm transition-all duration-300"
+            className="group inline-flex items-center gap-2.5 font-mono text-sm text-slate-400 hover:text-white transition-colors"
           >
-            <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-            </svg>
-            View all projects on GitHub
-            <ExternalLink className="w-3.5 h-3.5 text-slate-600 group-hover:text-slate-400 transition-colors" />
-          </motion.a>
+            <span className="text-cyan-400">→</span>
+            <span className="border-b border-white/15 group-hover:border-white/40 pb-0.5 transition-colors">
+              all_repositories()
+            </span>
+            <ArrowUpRight className="w-3.5 h-3.5 text-slate-600 group-hover:text-cyan-400 transition-colors" />
+          </a>
         </motion.div>
       </div>
     </section>

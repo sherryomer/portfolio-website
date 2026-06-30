@@ -5,7 +5,7 @@ import { Skills } from "@/components/sections/skills"
 import { Education } from "@/components/sections/education"
 import { Contact } from "@/components/sections/contact"
 import { Navigation } from "@/components/navigation"
-import { TimelineNav } from "@/components/timeline-nav"
+import { SystemIndex } from "@/components/system-index"
 import { ScrollPath } from "@/components/scroll-path"
 
 export default function Home() {
@@ -13,7 +13,7 @@ export default function Home() {
     <main className="relative min-h-screen bg-[#070710] overflow-x-hidden">
       <ScrollPath />
       <Navigation />
-      <TimelineNav />
+      <SystemIndex />
       <Hero />
       <Experience />
       <Projects />
