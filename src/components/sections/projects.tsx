@@ -7,11 +7,11 @@ import { SectionHeader } from "@/components/section-header"
 const projects = [
   {
     id: 1,
-    name: "JOBOT",
-    subtitle: "Full-Stack Job Search Platform",
+    name: "SleepApply",
+    subtitle: "Job Search Operating System",
     description:
-      "JOBOT is a full-stack job search platform built with TypeScript — intelligent listing aggregation, advanced search and filter, real-time tracking, and an end-to-end application management workflow. Designed to cut through the noise and streamline your entire job hunt from discovery to offer.",
-    tech: ["TypeScript", "Next.js", "React", "Tailwind CSS"],
+      "SleepApply (formerly JOBOT) is a full job-search operating system — listing aggregation via Google Jobs, saved-jobs Kanban tracking, AI CV Intelligence (ATS scoring + prioritized fixes), AI CV Tailoring per job, and Auto Apply that drafts cover letters and screening answers, with autonomous send on mailto applications.",
+    tech: ["TypeScript", "Next.js 14", "Supabase", "NextAuth", "OpenAI GPT-4", "SerpAPI"],
     github: null,
     liveUrl: "https://job-search-app-ten-lemon.vercel.app/auth/signin",
     isPrivate: true,
@@ -24,8 +24,8 @@ const projects = [
     name: "Simpaisa AI Chatbot",
     subtitle: "Production · Fintech",
     description:
-      "Production RAG chatbot deployed at Simpaisa — dual-channel (Telegram + Slack) merchant support using Supabase pgvector and GPT-4. Achieved 85.3% pass rate on a 200-question benchmark.",
-    tech: ["TypeScript", "RAG", "GPT-4", "Supabase", "n8n"],
+      "Production RAG chatbot deployed at Simpaisa — merchant support across Slack, WhatsApp, Telegram, and web. 3-agent LangGraph pipeline (Knowledge, Persona, Orchestrator) on Qwen3-32B + Kimi K2, hybrid retrieval (RRF fusion + LLM reranking) over an OKF-structured Supabase pgvector knowledge base.",
+    tech: ["TypeScript", "LangGraph", "Groq", "Qwen3-32B", "Kimi K2", "Supabase pgvector"],
     github: null,
     liveUrl: "https://simpaisa-chatbot.onrender.com",
     isPrivate: true,
